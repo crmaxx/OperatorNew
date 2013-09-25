@@ -1,0 +1,14 @@
+DECLARE
+  oper_id operators.id%type;
+  sn_id service_numbers.id%type;
+BEGIN
+  INSERT INTO operators (name,description,standard_id,org_id,country_id,mcc,mnc,currency_id) VALUES ('<%= @name %>','<%= @description %>',1,99822,1,null,null,1) RETURNING id INTO oper_id;
+
+  INSERT INTO service_numbers (module_name,snumber,operator_id,in_sms_price,out_sms_price,sms_charging_type_id,operator_share,mt_cost,recognize_1st_mt,cost_1st_mt) VALUES ('<%= @module_name %>','<%= @snumber %>',oper_id,'<%= @in_sms_price %>',0,1,'<%= @operator_share %>',0,null,null) RETURNING id INTO sn_id;
+
+  INSERT INTO tariff_plans_snumbers VALUES (21, sn_id);
+  INSERT INTO tariff_plans_snumbers VALUES (22, sn_id);
+  INSERT INTO tariff_plans_snumbers VALUES (23, sn_id);
+  COMMIT;
+END;
+/
