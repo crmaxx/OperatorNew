@@ -10,7 +10,7 @@ BEGIN
        AND description = '<%= @description %>'
        AND org_id = 99822
        AND rownum = 1;
-  EXCEPTION WHEN NO_DATA_FOUND
+  EXCEPTION WHEN NO_DATA_FOUND THEN
     INSERT INTO operators (name,description,standard_id,org_id,country_id,mcc,mnc,currency_id) VALUES ('<%= @name %>','<%= @description %>',1,99822,1,null,null,1) RETURNING id INTO oper_id;
   END;
 
