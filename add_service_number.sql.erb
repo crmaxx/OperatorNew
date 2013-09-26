@@ -7,7 +7,7 @@ BEGIN
       INTO oper_id
       FROM operators
      WHERE name = '<%= @name %>'
-       AND description = '<%= @description %>'
+       AND TO_CHAR(description) = '<%= @description %>'
        AND org_id = 99822
        AND rownum = 1;
   EXCEPTION WHEN NO_DATA_FOUND THEN
