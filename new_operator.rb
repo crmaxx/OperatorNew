@@ -5,7 +5,7 @@ require 'csv'
 
 csv_file = File.expand_path('../smsjoin.csv', __FILE__)
 erb_file = File.expand_path('../add_service_number.sql.erb', __FILE__)
-sql_file = File.expand_path('../add_service_number.sql', __FILE__)
+sql_file = File.expand_path('../add_service_numbers.sql', __FILE__)
 
 def save(file, data)
   File.open(file, 'a') do |f|
