@@ -16,9 +16,9 @@ BEGIN
 
   INSERT INTO service_numbers (module_name,snumber,operator_id,in_sms_price,out_sms_price,sms_charging_type_id,operator_share,mt_cost,recognize_1st_mt,cost_1st_mt) VALUES ('<%= @module_name %>','<%= @snumber %>',oper_id,'<%= @in_sms_price %>',0,1,'<%= @operator_share %>',0,null,null) RETURNING id INTO sn_id;
 
-  INSERT INTO tariff_plans_snumbers (TARIFF_ID, SERVICE_NUMBER_ID) VALUES (21, sn_id);
-  INSERT INTO tariff_plans_snumbers (TARIFF_ID, SERVICE_NUMBER_ID) VALUES (22, sn_id);
-  INSERT INTO tariff_plans_snumbers (TARIFF_ID, SERVICE_NUMBER_ID) VALUES (23, sn_id);
+  INSERT INTO tariff_plans_snumbers (TARIFF_ID, SERVICE_NUMBER_ID) VALUES (51, sn_id);
+  INSERT INTO tariff_plans_snumbers (TARIFF_ID, SERVICE_NUMBER_ID) VALUES (52, sn_id);
+  INSERT INTO tariff_plans_snumbers (TARIFF_ID, SERVICE_NUMBER_ID) VALUES (53, sn_id);
 
   COMMIT;
 END;
