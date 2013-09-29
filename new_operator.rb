@@ -17,7 +17,7 @@ end
 save(sql_file, 'spool add_service_number.log')
 
 CSV.foreach(csv_file, col_sep: ';') do |row|
-  @name, @description, @snumber, @in_sms_price, @operator_share, @module_name = row
+  @name, @description, @snumber, @in_sms_price, @operator_share, @module_name, @basic, @profi, @premium = row
   save(sql_file, ERB.new(File.read(erb_file)).result(binding))
 end
 
