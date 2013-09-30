@@ -17,7 +17,7 @@ BEGIN
      WHERE name = '<%= @country %>'
       AND rownum = 1;
   EXCEPTION WHEN NO_DATA_FOUND THEN
-    INSERT INTO countries (name) VALUES ('<%= @country %>') RETURNING id INTO c_id;
+    INSERT INTO countries (name,country_code) VALUES ('<%= @country %>', <%= @country_code %>) RETURNING id INTO c_id;
   END;
   --find or create operator
   BEGIN
