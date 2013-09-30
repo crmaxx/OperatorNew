@@ -3,7 +3,7 @@
 require 'erb'
 require 'csv'
 
-csv_file = File.expand_path('../smsjoin.csv', __FILE__)
+csv_file = File.expand_path('../platinote-countries.csv', __FILE__)
 erb_file = File.expand_path('../add_service_number.sql.erb', __FILE__)
 sql_file = File.expand_path('../add_service_numbers.sql', __FILE__)
 
@@ -17,7 +17,7 @@ end
 save(sql_file, 'spool add_service_number.log')
 
 CSV.foreach(csv_file, col_sep: ';') do |row|
-  @name, @description, @snumber, @in_sms_price, @operator_share, @module_name, @basic, @profi, @premium = row
+  @country, @name, @description, @snumber, @in_sms_price, @operator_share, @module_name, @basic, @profi, @premium = row
   save(sql_file, ERB.new(File.read(erb_file)).result(binding))
 end
 

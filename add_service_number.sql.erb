@@ -1,31 +1,51 @@
 DECLARE
+  c_id countries.id%type;
   oper_id operators.id%type;
   sn_id service_numbers.id%type;
   tpsn_id tariff_plans_snumbers.id%type;
+  v_org_id NUMBER := 99822;
+  cur_id NUMBER := 1; -- rur
+  basic NUMBER := 51;
+  profi NUMBER := 52;
+  premium NUMBER := 53;
 BEGIN
+  --find or create country
+  BEGIN
+    SELECT id
+      INTO c_id
+      FROM countries
+     WHERE name = '<%= @country %>'
+      AND rownum = 1;
+  EXCEPTION WHEN NO_DATA_FOUND THEN
+    INSERT INTO countries (name) VALUES ('<%= @country %>') RETURNING id INTO c_id;
+  END;
+  --find or create operator
   BEGIN
     SELECT id
       INTO oper_id
       FROM operators
      WHERE name = '<%= @name %>'
+      <% unless @description.nil? %>
        AND TO_CHAR(description) = '<%= @description %>'
-       AND org_id = 99822
+      <% end %>
+       AND org_id = v_org_id
        AND rownum = 1;
   EXCEPTION WHEN NO_DATA_FOUND THEN
-    INSERT INTO operators (name,description,standard_id,org_id,country_id,mcc,mnc,currency_id) VALUES ('<%= @name %>','<%= @description %>',1,99822,1,null,null,1) RETURNING id INTO oper_id;
+    INSERT INTO operators (name,description,standard_id,org_id,country_id,mcc,mnc,currency_id) VALUES ('<%= @name %>','<%= @description %>',1,v_org_id,c_id,null,null,cur_id) RETURNING id INTO oper_id;
   END;
-
+  --create service number
   INSERT INTO service_numbers (module_name,snumber,operator_id,in_sms_price,out_sms_price,sms_charging_type_id,operator_share,mt_cost,recognize_1st_mt,cost_1st_mt) VALUES ('<%= @module_name %>','<%= @snumber %>',oper_id,'<%= @in_sms_price %>',0,1,'<%= @operator_share %>',0,null,null) RETURNING id INTO sn_id;
-
-  INSERT INTO tariff_plans_snumbers (TARIFF_ID, SERVICE_NUMBER_ID) VALUES (51, sn_id) RETURNING id INTO tpsn_id;
+  --add tariff plan to service number
+  INSERT INTO tariff_plans_snumbers (TARIFF_ID, SERVICE_NUMBER_ID) VALUES (basic, sn_id) RETURNING id INTO tpsn_id;
   <% unless @basic.nil? %>
+  --add partners threshold
   INSERT INTO month_mo_price_thresholds (TARIFF_PLANS_SN_ID, PARTNER_PCT) VALUES (tpsn_id, '<%= @basic %>');
   <% end %>
-  INSERT INTO tariff_plans_snumbers (TARIFF_ID, SERVICE_NUMBER_ID) VALUES (52, sn_id) RETURNING id INTO tpsn_id;
+  INSERT INTO tariff_plans_snumbers (TARIFF_ID, SERVICE_NUMBER_ID) VALUES (profi, sn_id) RETURNING id INTO tpsn_id;
   <% unless @profi.nil? %>
   INSERT INTO month_mo_price_thresholds (TARIFF_PLANS_SN_ID, PARTNER_PCT) VALUES (tpsn_id, '<%= @profi %>');
   <% end %>
-  INSERT INTO tariff_plans_snumbers (TARIFF_ID, SERVICE_NUMBER_ID) VALUES (53, sn_id) RETURNING id INTO tpsn_id;
+  INSERT INTO tariff_plans_snumbers (TARIFF_ID, SERVICE_NUMBER_ID) VALUES (premium, sn_id) RETURNING id INTO tpsn_id;
   <% unless @premium.nil? %>
   INSERT INTO month_mo_price_thresholds (TARIFF_PLANS_SN_ID, PARTNER_PCT) VALUES (tpsn_id, '<%= @premium %>');
   <% end %>
